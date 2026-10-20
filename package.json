@@ -1,0 +1,124 @@
+{
+  "name": "tangshiye",
+  "productName": "TangShiYe",
+  "version": "0.3.0",
+  "description": "汤师爷 TangShiYe — 鼠标选中代码，一键逐行讲人话。免费云端模型 / 本地 Ollama / 断网也能用的离线规则引擎。",
+  "main": "dist/main/index.js",
+  "license": "MIT",
+  "author": {
+    "name": "zuoshuzhang"
+  },
+  "homepage": "https://github.com/zuoshuzhang/TangShiYe#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zuoshuzhang/TangShiYe.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zuoshuzhang/TangShiYe/issues"
+  },
+  "keywords": [
+    "electron",
+    "code-explain",
+    "llm",
+    "zhipu",
+    "glm-4-flash",
+    "ollama",
+    "qwen2.5-coder",
+    "openai",
+    "free",
+    "tray",
+    "global-hotkey",
+    "double-tap-ctrl",
+    "line-by-line",
+    "code-tutor",
+    "developer-tool",
+    "tangshiye",
+    "汤师爷",
+    "code-reading"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/copy-renderer-deps.mjs",
+    "start": "npm run build && electron .",
+    "dev": "npm run build && electron .",
+    "icon": "node scripts/build-ico.mjs",
+    "pack": "npm run build && electron-builder --dir",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:linux": "npm run build && electron-builder --linux"
+  },
+  "dependencies": {
+    "electron-store": "^8.2.0",
+    "marked": "^18.0.3",
+    "uiohook-napi": "^1.5.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "electron": "^28.2.0",
+    "electron-builder": "^24.9.1",
+    "typescript": "^5.3.3"
+  },
+  "build": {
+    "appId": "com.zuoshuzhang.tangshiye",
+    "productName": "TangShiYe",
+    "copyright": "Copyright © 2026 zuoshuzhang",
+    "asar": true,
+    "asarUnpack": [
+      "node_modules/uiohook-napi/**/*"
+    ],
+    "files": [
+      "dist/**/*",
+      "src/renderer/**/*",
+      "assets/icon.png",
+      "assets/icon.ico",
+      "assets/tray-icon.png",
+      "assets/tray-icon-disabled.png",
+      "package.json",
+      "!**/*.map",
+      "!scripts/**/*",
+      "!**/.{cache,DS_Store}"
+    ],
+    "directories": {
+      "output": "release",
+      "buildResources": "assets"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "assets/icon.ico",
+      "artifactName": "${productName}-Setup-${version}-${arch}.${ext}"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "icon": "assets/icon.png",
+      "category": "public.app-category.developer-tools",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "linux": {
+      "target": ["AppImage"],
+      "icon": "assets/icon.png",
+      "category": "Development",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "include": "build/installer.nsh",
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "汤师爷",
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico"
+    }
+  }
+}

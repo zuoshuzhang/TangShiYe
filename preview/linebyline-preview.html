@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>TangShiYe · 逐行注释模式预览</title>
+  <link rel="stylesheet" href="../src/renderer/popup/styles.css" />
+  <style>
+    body { background: #f2f3f5; padding: 40px 24px; font-family: inherit; }
+    .page-wrap { max-width: 620px; margin: 0 auto; }
+    h1 { font-size: 20px; margin: 0 0 6px; color: #111418; font-weight: 600; }
+    .sub { font-size: 13px; color: #6b7280; margin: 0 0 24px; line-height: 1.6; }
+    .demo-card {
+      background: #fff;
+      border: 1px solid rgba(15,17,21,0.08);
+      border-radius: 10px;
+      box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.08);
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+    .demo-titlebar {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px 8px 12px;
+      border-bottom: 1px solid rgba(15,17,21,.08);
+    }
+    .demo-titlebar code {
+      flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      font-family: "JetBrains Mono","Cascadia Code","Consolas",monospace;
+      font-size: 11.5px; color: #6b7280;
+    }
+    .demo-dot { width: 10px; height: 10px; border-radius: 50%; background: #d4d4d8; }
+    .demo-content { padding: 12px 14px 10px; }
+    .note-box {
+      background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px;
+      padding: 12px 14px; font-size: 12.5px; line-height: 1.7; color: #78350f;
+    }
+    .note-box b { color: #92400e; }
+    .note-box code {
+      background: rgba(120,53,15,.1); padding: 1px 5px; border-radius: 4px;
+      font-family: "JetBrains Mono","Consolas",monospace; font-size: 11.5px;
+    }
+    .toggle-dark {
+      display: inline-block; margin-left: 8px; font-size: 12px;
+      padding: 4px 10px; border: 1px solid rgba(15,17,21,.14); border-radius: 6px;
+      cursor: pointer; background: #fff; color: #374151; font-family: inherit;
+    }
+    .toggle-dark:hover { background: #f3f4f6; }
+    body.dark { background: #16161a; }
+    body.dark h1 { color: #e7e8ea; }
+    body.dark .sub { color: #8a8f98; }
+    body.dark .demo-card { background: #0e0e10; border-color: rgba(255,255,255,.08); }
+    body.dark .demo-titlebar { border-color: rgba(255,255,255,.08); }
+    body.dark .demo-titlebar code { color: #8a8f98; }
+    body.dark .note-box { background: #2a1f00; border-color: #78350f; color: #fcd34d; }
+    body.dark .toggle-dark { background: #1f2937; color: #e5e7eb; border-color: rgba(255,255,255,.14); }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+    <h1>TangShiYe · 逐行注释模式 <button class="toggle-dark" onclick="document.body.classList.toggle('dark')">🌗 切换明暗</button></h1>
+    <p class="sub">
+      这是选中代码后、点「详解」时浮窗的真实渲染效果（用假数据演示，无需 API Key）。<br>
+      三列严格对齐：<b>行号黄底</b> / <b>原代码灰底</b> / <b>解释绿字</b>。真实使用时由 AI 逐行生成中文解释。
+    </p>
+
+    <div class="demo-card">
+      <div class="demo-titlebar">
+        <code>def bubble_sort(arr):&nbsp;&nbsp;← 标题栏显示你选中的代码</code>
+        <span class="demo-dot"></span>
+      </div>
+      <div class="demo-content">
+        <div class="detail-line-by-line">
+          <div class="line-by-line-header">
+            <span class="line-by-line-badge">📋 逐行</span>
+            <span class="line-by-line-stat" id="stat-python">0 / 0 行</span>
+            <button class="line-by-line-toggle">⇄ 拆解</button>
+          </div>
+          <div class="line-by-line-grid" id="grid-python"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note-box">
+      <b>这个 fork 相比原版的关键变化：</b><br>
+      · 后端默认换成 <b>智谱 GLM-4-Flash（永久免费）</b>，注册实名即送 2000 万 token，不用付费<br>
+      · 也可切到 <code>provider: "ollama"</code> + <code>qwen2.5-coder</code> 本地模型，<b>完全断网可用</b><br>
+      · 新增「逐行注释」详解模式，托盘菜单可热切换回原版「拆解」模式<br>
+      · 缓存按模式分维度，两种模式互不覆盖
+    </div>
+  </div>
+
+  <script>
+    // 模拟 AI 返回的 lines 数据（Python 冒泡排序）
+    const pythonLines = [
+      { n: 1, code: 'def bubble_sort(arr):',              explain: '定义函数 bubble_sort，接收列表 arr' },
+      { n: 2, code: '    n = len(arr)',                   explain: '取列表长度存入 n' },
+      { n: 3, code: '    for i in range(n):',             explain: '外层循环，控制第 i 轮冒泡' },
+      { n: 4, code: '        for j in range(0, n - i - 1):', explain: '内层循环，每轮把最大值推到末尾' },
+      { n: 5, code: '            if arr[j] > arr[j + 1]:', explain: '相邻两元素逆序时' },
+      { n: 6, code: '                arr[j], arr[j+1] = arr[j+1], arr[j]', explain: '交换位置（Python 元组解包）' },
+      { n: 7, code: '',                                    explain: '空行' },
+      { n: 8, code: '    return arr',                      explain: '返回已排序的原列表（就地修改）' },
+    ];
+
+    // 模拟 C 指针代码
+    const cLines = [
+      { n: 1,  code: '#include <stdio.h>',          explain: '引入标准输入输出头文件' },
+      { n: 2,  code: '',                            explain: '空行' },
+      { n: 3,  code: 'int main(void) {',            explain: '定义主函数，无参数，返回 int' },
+      { n: 4,  code: '    int x = 42;',             explain: '定义整型变量 x 并初始化为 42' },
+      { n: 5,  code: '    int *p = &x;',            explain: '定义指针 p，指向 x 的地址（取址符 &）' },
+      { n: 6,  code: '    printf("%d\\n", *p);',     explain: '解引用 p 取值并打印，%d 对应整数' },
+      { n: 7,  code: '    return 0;',               explain: '返回 0，表示程序正常退出' },
+      { n: 8,  code: '}',                           explain: 'main 函数结束' },
+    ];
+
+    function paint(gridId, statId, lines) {
+      const grid = document.getElementById(gridId);
+      const stat = document.getElementById(statId);
+      grid.innerHTML = '';
+      lines.forEach((ln, idx) => {
+        const row = document.createElement('div');
+        row.className = 'line-row';
+        row.style.setProperty('--row-delay', (idx * 18) + 'ms');
+
+        const num = document.createElement('div');
+        num.className = 'line-num';
+        num.textContent = String(ln.n);
+
+        const codeCell = document.createElement('div');
+        codeCell.className = 'line-code';
+        const pre = document.createElement('pre');
+        // 空行用空格占位，保证行高一致
+        pre.textContent = ln.code === '' ? ' ' : ln.code;
+        codeCell.appendChild(pre);
+
+        const exp = document.createElement('div');
+        exp.className = 'line-exp';
+        exp.textContent = ln.explain;
+
+        row.appendChild(num);
+        row.appendChild(codeCell);
+        row.appendChild(exp);
+        grid.appendChild(row);
+      });
+      stat.textContent = lines.length + ' / ' + lines.length + ' 行';
+    }
+
+    paint('grid-python', 'stat-python', pythonLines);
+  </script>
+</body>
+</html>

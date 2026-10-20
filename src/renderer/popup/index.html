@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:;" />
+  <title>汤师爷 — 鼠标选中即解读</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="whisper-card" id="card">
+    <!-- 标题栏 -->
+    <header class="titlebar">
+      <code class="titlebar-code" id="title-code">等待选中代码</code>
+      <span class="offline-badge hidden" id="offline-badge" title="离线模式：由本地规则引擎解释，不联网、不调用 AI">🔌 离线</span>
+      <div class="titlebar-buttons">
+        <button class="titlebar-btn btn-pin" id="btn-pin" title="固定窗口" aria-label="固定窗口">
+          <svg class="icon icon-pin" viewBox="0 0 24 24" aria-hidden="true">
+            <line x1="12" x2="12" y1="17" y2="22"/>
+            <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/>
+          </svg>
+        </button>
+        <button class="titlebar-btn" id="btn-close" title="关闭" aria-label="关闭">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <line x1="6"  y1="6"  x2="18" y2="18"/>
+            <line x1="18" y1="6"  x2="6"  y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- 内容区 -->
+    <section class="content" id="content">
+      <div class="status" id="status-empty">
+        选中代码 · 复制 · 双击 Ctrl
+      </div>
+
+      <div class="loading hidden" id="status-loading">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span id="loading-text">解读中</span>
+      </div>
+
+      <div class="error-box hidden" id="status-error">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span id="error-text"></span>
+      </div>
+
+      <div class="explanation markdown hidden" id="explanation"></div>
+
+      <!-- segmented 模式用原 detail 容器（marked 渲染 markdown） -->
+      <div class="detail markdown hidden" id="detail"></div>
+
+      <!-- lineByLine 模式用新容器（CSS Grid 三列对齐） -->
+      <div class="detail-line-by-line hidden" id="detail-line-by-line">
+        <div class="line-by-line-header">
+          <span class="line-by-line-badge" id="lbl-mode">📋 逐行</span>
+          <span class="line-by-line-stat" id="lbl-stat">0 / 0 行</span>
+          <button class="line-by-line-toggle" id="btn-mode-switch" title="切换到拆解模式">⇄ 拆解</button>
+        </div>
+        <div class="line-by-line-grid" id="line-by-line-grid">
+          <!-- 由 popup.js 动态填充 .line-row 元素 -->
+        </div>
+        <div class="line-by-line-footer hidden" id="lbl-overflow">
+          <span id="lbl-overflow-text">共 N 行,仅显示前 M 行</span>
+          <button id="btn-show-all">展开全部</button>
+        </div>
+        <pre class="line-by-line-raw hidden" id="lbl-raw"></pre>
+      </div>
+
+      <div class="chat hidden" id="chat">
+        <div class="chat-divider">追问</div>
+        <div class="chat-messages" id="chat-messages"></div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="actions" id="actions-quick">
+        <button class="action-btn" id="btn-copy" title="复制原代码">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          复制
+        </button>
+        <button class="action-btn primary" id="btn-detail" title="展开详解">
+          详解
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="chat-input-row hidden" id="chat-input-row">
+        <input type="text"
+               class="chat-input"
+               id="chat-input"
+               placeholder="追问任何细节…"
+               maxlength="500" />
+        <button class="chat-send-btn" id="btn-send" title="发送 (Enter)" aria-label="发送">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+    </footer>
+
+    <div class="toast hidden" id="toast">已复制</div>
+  </div>
+
+  <script src="lib/marked.umd.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

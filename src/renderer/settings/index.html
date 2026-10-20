@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:;" />
+  <title>汤师爷 · 设置</title>
+  <link rel="stylesheet" href="settings.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="page-head">
+      <h1>设置</h1>
+      <p class="sub">配好之后就再也不用碰 config.json 了</p>
+    </header>
+
+    <!-- ① 服务商 -->
+    <section class="card">
+      <div class="card-head">
+        <span class="step">1</span>
+        <h2>选一个 AI 服务商</h2>
+      </div>
+
+      <div class="provider-grid" id="provider-grid">
+        <button class="provider" data-provider="zhipu" type="button">
+          <span class="provider-badge free">免费</span>
+          <strong>智谱 GLM-4-Flash</strong>
+          <small>注册实名送 2000 万 token<br />国内直连，中文最好</small>
+        </button>
+        <button class="provider" data-provider="ollama" type="button">
+          <span class="provider-badge offline">完全离线</span>
+          <strong>Ollama 本地模型</strong>
+          <small>需先装 Ollama 并拉模型<br />断网可用，隐私最好</small>
+        </button>
+        <button class="provider" data-provider="openai-compat" type="button">
+          <span class="provider-badge paid">付费</span>
+          <strong>其他 OpenAI 兼容</strong>
+          <small>DeepSeek / 通义 / Kimi<br />Moonshot 等都行</small>
+        </button>
+      </div>
+
+      <p class="hint" id="provider-hint"></p>
+    </section>
+
+    <!-- ② 连接信息 -->
+    <section class="card">
+      <div class="card-head">
+        <span class="step">2</span>
+        <h2>填连接信息</h2>
+      </div>
+
+      <div class="field">
+        <label for="api-key">API Key</label>
+        <div class="input-row">
+          <input id="api-key" type="password" autocomplete="off" spellcheck="false"
+                 placeholder="粘贴你的 API Key" />
+          <button class="icon-btn" id="toggle-key" type="button" title="显示 / 隐藏">👁</button>
+        </div>
+        <p class="field-hint" id="key-hint"></p>
+      </div>
+
+      <div class="field">
+        <label for="base-url">Base URL</label>
+        <input id="base-url" type="text" spellcheck="false" placeholder="https://..." />
+        <p class="field-hint">一般不用改；填到 <code>/v1</code> 或 <code>/v4</code> 这一级即可，程序会自动拼 <code>/chat/completions</code></p>
+      </div>
+
+      <div class="field">
+        <label for="model">模型名</label>
+        <input id="model" type="text" spellcheck="false" placeholder="glm-4-flash" />
+      </div>
+
+      <div class="test-row">
+        <button class="btn secondary" id="btn-test" type="button">测试连接</button>
+        <span class="test-status" id="test-status"></span>
+      </div>
+    </section>
+
+    <!-- ③ 使用偏好 -->
+    <section class="card">
+      <div class="card-head">
+        <span class="step">3</span>
+        <h2>使用偏好</h2>
+      </div>
+
+      <div class="field">
+        <label>详解模式</label>
+        <div class="segmented" id="detail-mode">
+          <button type="button" data-mode="lineByLine">逐行注释</button>
+          <button type="button" data-mode="segmented">分段拆解</button>
+        </div>
+        <p class="field-hint">逐行注释：每行代码后面直接挂中文解释；分段拆解：AI 用自然语言整体讲解</p>
+      </div>
+
+      <label class="switch-row">
+        <input type="checkbox" id="offline-mode" />
+        <span class="switch-text">
+          <strong>离线模式</strong>
+          <small>不联网、不调 AI，用内置词典逐行解释。断网或不想消耗额度时用</small>
+        </span>
+      </label>
+
+      <label class="switch-row">
+        <input type="checkbox" id="auto-launch" />
+        <span class="switch-text">
+          <strong>开机自启</strong>
+          <small>开机后自动在托盘常驻，随时双击 Ctrl 可用</small>
+        </span>
+      </label>
+    </section>
+
+    <footer class="page-foot">
+      <button class="link-btn" id="btn-open-dir" type="button">打开配置文件目录</button>
+      <div class="actions">
+        <button class="btn ghost" id="btn-cancel" type="button">取消</button>
+        <button class="btn primary" id="btn-save" type="button">保存</button>
+      </div>
+    </footer>
+
+    <p class="version" id="version"></p>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="settings.js"></script>
+</body>
+</html>
