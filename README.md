@@ -3,21 +3,21 @@
 > 鼠标选中代码，双击 `Ctrl`，逐行讲人话。
 > 常驻系统托盘的桌面代码阅读器 —— 能用免费的云端模型，能跑本地 Ollama，**断网也能用**。
 
-![platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue)
+![平台](https://img.shields.io/badge/平台-Windows%20%7C%20macOS%20%7C%20Linux-blue)
 ![electron](https://img.shields.io/badge/electron-28-47848f)
-![license](https://img.shields.io/badge/license-MIT-green)
-![offline](https://img.shields.io/badge/offline-规则引擎-orange)
-![release](https://img.shields.io/badge/release-0.3.0-brightgreen)
+![许可证](https://img.shields.io/badge/license-MIT-green)
+![离线](https://img.shields.io/badge/offline-规则引擎-orange)
+![发布](https://img.shields.io/badge/release-0.3.0-brightgreen)
 
 ---
 
 ## 它解决什么问题
 
-读别人写的代码时，最耗神的从来不是语法，而是"这一行到底想干嘛"。切窗口去问 AI，要把代码复制来复制去，上下文还断。
+读别人写的代码时，最耗神的从来不是语法，而是“这一行到底想干嘛”。切窗口去问 AI，要把代码复制来复制去，上下文还断。
 
 汤师爷把这件事压成三个动作：**选中 → `Ctrl+C` → 双击 `Ctrl`**，鼠标旁边直接弹中文解读。
 
-名字取自旧时替人读文书、出主意的师爷 —— 你的代码，它来念。
+名字取自《让子弹飞》 —— 汤师爷，您给翻译翻译，什么叫惊喜。
 
 ---
 
@@ -224,10 +224,7 @@ Windows 会把不常动的图标收进托盘折叠区，点 `^` 展开，或把�
 401 = Key 无效；404 = Base URL 或模型名写错；429 = 触发限流；网络不通且用的 Ollama = 先确认 `ollama serve` 已启动。
 
 **离线模式认不出我选的代码？**
-规则引擎目前只覆盖 C 和 Python，且词典有边界。选中别的语言、或需要理解算法意图时，关闭离线模式走 AI。
-
-**从旧版 `WTF-Zh-Ol` 升级，API Key 会丢吗？**
-不会。启动时会自动把 `WTF-Zh-Ol`（以及更早的 `codewhisper`）目录下的 `config.json` 迁到新目录，已在新版配过 Key 则不动。
+规则引擎目前只覆盖 C 和 Python，且词典有边界。选中别的语言、或需要理解算法意图时，请关闭离线模式走 AI。
 
 **GPU 相关启动闪退？**
 设环境变量 `TSY_DISABLE_GPU=1` 再启动，会关闭硬件加速并把 GPU 进程内联。
@@ -239,7 +236,6 @@ Windows 会把不常动的图标收进托盘折叠区，点 `^` 展开，或把�
 ### 0.3.0（首发以 TangShiYe 之名）
 
 - 项目独立，正式定名 **汤师爷 / TangShiYe**
-- 新增配置迁移：从旧 `WTF-Zh-Ol` / `codewhisper` 目录自动搬运 API Key，改名不丢配置
 - 界面文案、托盘提示、快捷方式名、安装包名全部统一为「汤师爷」
 
 > 0.3.0 之前的功能以 `WTF-Zh-Ol` 之名开发：离线速览逐行正文、表达式人话翻译、结构体与指针的误判修正、图形化设置窗口、NSIS 安装互斥修复 —— 均已在 0.2.0 ~ 0.2.2 中完成并延续到本项目。
@@ -250,7 +246,7 @@ Windows 会把不常动的图标收进托盘折叠区，点 `^` 展开，或把�
 
 双击 `Ctrl` 唤起浮窗这个交互形态，最初受到 [MikeMengTR/whats-this-function](https://github.com/MikeMengTR/whats-this-function) 的启发，在此致谢。
 
-本项目是**独立项目**，不是其 fork：后端、提示词、离线引擎、设置界面、UI 层均已重写，不再跟随上游更新。
+本项目是**独立项目**，不是其 fork：后端、提示词、设置界面、UI 层均已重写，新增了离线引擎和离线模式，不再跟随上游更新。
 
 ---
 
